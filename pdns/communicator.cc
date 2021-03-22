@@ -50,9 +50,14 @@ void CommunicatorClass::retrievalLoopThread(void)
       std::lock_guard<std::mutex> l(d_lock);
       if(d_suckdomains.empty()) 
         continue;
-        
-      sr=d_suckdomains.front();
-      d_suckdomains.pop_front();
+    
+      auto firstItem = d_suckdomains.begin();
+
+      sr=*firstItem;
+      d_suckdomains.erase(firstItem);
+      if (d_suckdomains.empty()) {
+        d_sorthelper = 0;
+      }
     }
     suck(sr.domain, sr.master, sr.force);
   }
